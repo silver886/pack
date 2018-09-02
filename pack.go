@@ -37,7 +37,7 @@ func (box Box) ExtractTo(dest string, file string) (err error) {
 	destPath, _ := filepath.Abs(dest)
 	destDirPath := filepath.Dir(destPath)
 	if !llfile.Exist(destDirPath) {
-		os.MkdirAll(destDirPath, 0600)
+		os.MkdirAll(destDirPath, 0755|os.ModeDir)
 	}
 
 	fileByte, err := box.MustBytes(file)
@@ -60,12 +60,10 @@ func (box Box) Clear() (err error) {
 }
 
 // New create a packr.Box
-func New(src string, dest string) (box Box) {
-	absSrc, _ := filepath.Abs(src)
-	packrBox := packr.NewBox(absSrc)
+func New(packrBox packr.Box, dest string) (box Box) {
 	absDest, _ := filepath.Abs(dest)
 	if !llfile.Exist(absDest) {
-		os.MkdirAll(absDest, 0600)
+		os.MkdirAll(absDest, 0755|os.ModeDir)
 	}
 	box = Box{
 		Box:  &packrBox,
