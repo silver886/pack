@@ -174,7 +174,7 @@ func (box Box) Clear() (err error) {
 				"box":            box,
 				"internal_error": err,
 			}),
-		).Debugln("Clear destination directory . . .")
+		).Debugln("Clear destination directory")
 	}
 
 	return
