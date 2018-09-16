@@ -52,7 +52,7 @@ func (box Box) Extract(file string) (path string, err error) {
 		intLogger.WithFields(
 			logger.DebugInfo(1, logrus.Fields{
 				"box":            box,
-				"path":           path,
+				"file_path":      path,
 				"internal_error": err,
 			}),
 		).Debugln("Extract file")
@@ -90,7 +90,7 @@ func (box Box) ExtractToDir(dest string, file string) (path string, err error) {
 		intLogger.WithFields(
 			logger.DebugInfo(1, logrus.Fields{
 				"box":            box,
-				"path":           path,
+				"file_path":      path,
 				"internal_error": err,
 			}),
 		).Debugln("Extract file to directory")
