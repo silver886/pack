@@ -1,4 +1,3 @@
-// Package pack provides various single line function for external source
 package pack
 
 import (
@@ -13,12 +12,12 @@ import (
 
 var (
 	intLog    bool
-	intLogger *logger.Logger
+	intLogger *logger.Entry
 )
 
 // SetLogger set internal logger for logging
 func SetLogger(extLogger *logger.Logger) {
-	intLogger = extLogger
+	intLogger = extLogger.WithField("prefix", "pack")
 	intLog = true
 }
 
