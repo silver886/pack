@@ -16,65 +16,55 @@ type Box struct {
 }
 
 // Extract extract the file to the destination folder
-func (box Box) Extract(file string) (path string, err error) {
-	path, err = box.ExtractToDir(box.Dest, file)
-
-	return
+func (box *Box) Extract(file string) (string, error) {
+	return box.ExtractToDir(box.Dest, file)
 }
 
 // ExtractToDir extract the file to the target folder
-func (box Box) ExtractToDir(dest string, file string) (path string, err error) {
-	err = box.ExtractTo(dest+"/"+file, file)
-	if err != nil {
-		return
+func (box *Box) ExtractToDir(dest string, file string) (string, error) {
+	if err := box.ExtractTo(dest+"/"+file, file); err != nil {
+		return "", err
+	} else if path, err := filepath.Abs(dest + "/" + file); err != nil {
+		return "", err
+	} else {
+		return path, nil
 	}
-	path, _ = filepath.Abs(dest + "/" + file)
-
-	return
 }
 
 // ExtractTo extract the file to the target path
-func (box Box) ExtractTo(dest string, file string) (err error) {
-	destPath, _ := filepath.Abs(dest)
-	destDirPath := filepath.Dir(destPath)
-	if !llfile.Exist(destDirPath) {
-		if err := os.MkdirAll(destDirPath, 0755|os.ModeDir); err != nil {
+func (box *Box) ExtractTo(dest string, file string) error {
+	if destPath, err := filepath.Abs(dest); err != nil {
+		return err
+	} else if !llfile.Exist(filepath.Dir(destPath)) {
+		if err := os.MkdirAll(filepath.Dir(destPath), 0755|os.ModeDir); err != nil {
 			return err
 		}
 	}
 
-	fileByte, err := box.Find(file)
-	if err != nil {
-		return
+	if fileByte, err := box.Find(file); err != nil {
+		return err
+	} else if _, err = llfile.WriteByte(dest, fileByte); err != nil {
+		return err
 	}
 
-	_, err = llfile.WriteByte(dest, fileByte)
-	if err != nil {
-		return
-	}
-
-	return
+	return nil
 }
 
 // Clear remove a packr.Box and content
-func (box Box) Clear() (err error) {
-	err = os.RemoveAll(box.Dest)
-
-	return
+func (box *Box) Clear() error {
+	return os.RemoveAll(box.Dest)
 }
 
 // New create a packr.Box
-func New(packrBox packr.Box, dest string) (box Box) {
+func New(packrBox packr.Box, dest string) *Box {
 	absDest, _ := filepath.Abs(dest)
 	if !llfile.Exist(absDest) {
 		if err := os.MkdirAll(absDest, 0755|os.ModeDir); err != nil {
-			return
+			return nil
 		}
 	}
-	box = Box{
+	return &Box{
 		Box:  &packrBox,
 		Dest: absDest,
 	}
-
-	return
 }
