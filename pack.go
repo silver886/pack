@@ -126,7 +126,7 @@ func (box Box) ExtractTo(dest string, file string) (err error) {
 		}
 	}
 
-	fileByte, err := box.MustBytes(file)
+	fileByte, err := box.Find(file)
 	if err != nil {
 		if intLog {
 			intLogger.WithFields(
