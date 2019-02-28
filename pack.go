@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/gobuffalo/packr"
-	llfile "leoliu.io/file"
+	sfile "github.com/silver886/file"
 )
 
 // Box add some attributes on packr.Box
@@ -35,7 +35,7 @@ func (box *Box) ExtractToDir(dest string, file string) (string, error) {
 func (box *Box) ExtractTo(dest string, file string) error {
 	if destPath, err := filepath.Abs(dest); err != nil {
 		return err
-	} else if !llfile.Exist(filepath.Dir(destPath)) {
+	} else if !sfile.Exist(filepath.Dir(destPath)) {
 		if err := os.MkdirAll(filepath.Dir(destPath), 0755|os.ModeDir); err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ func (box *Box) ExtractTo(dest string, file string) error {
 
 	if fileByte, err := box.Find(file); err != nil {
 		return err
-	} else if _, err = llfile.WriteByte(dest, fileByte); err != nil {
+	} else if _, err = sfile.WriteByte(dest, fileByte); err != nil {
 		return err
 	}
 
@@ -58,7 +58,7 @@ func (box *Box) Clear() error {
 // New create a packr.Box
 func New(packrBox packr.Box, dest string) *Box {
 	absDest, _ := filepath.Abs(dest)
-	if !llfile.Exist(absDest) {
+	if !sfile.Exist(absDest) {
 		if err := os.MkdirAll(absDest, 0755|os.ModeDir); err != nil {
 			return nil
 		}
